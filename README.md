@@ -12,7 +12,7 @@ Sistema automatizado que monitorea correos electrónicos de ejecuciones de prueb
 
 ## 📋 Requisitos Previos
 
-- **Python 3.10+**
+- **Python 3.10**
 - Cuenta de **Azure DevOps** con permisos para crear work items
 - Acceso **IMAP** a cuenta de correo electrónico
 - **Personal Access Token (PAT)** de Azure DevOps
@@ -59,7 +59,7 @@ LOG_FILE=monitor_correos.log
 4. Configurar mapeos (opcional)
 Editar MAPEO_REMITENTES en el código para agregar nuevos remitentes.
 
-## 🏃‍♂️ Ejecución
+## ▶️ Ejecución
 ```bash
 python main.py
 ```
@@ -83,7 +83,7 @@ Issue - Para errores y advertencias
 Task - Para ejecuciones exitosas
 
 
-## 🎨 Personalización
+## 🔩 Personalización
 Agregar nuevo remitente:
 * Agregar email a  MONITORED_SENDERS en .env
 
