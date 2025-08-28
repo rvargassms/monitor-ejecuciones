@@ -1,6 +1,6 @@
-# 📧 Monitor de Correos CI/CD para Azure Boards
+# 📧 Monitor de Correos de ejecucion y seguimient en Azure Boards
 
-Sistema automatizado que monitorea correos electrónicos de ejecuciones CI/CD y crea work items automáticamente en Azure Boards.
+Sistema automatizado que monitorea correos electrónicos de ejecuciones de pruebas manuales/automaticas y crea work items automáticamente en Azure Boards.
 
 ## 🚀 Características
 
