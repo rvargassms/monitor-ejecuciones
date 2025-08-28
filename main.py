@@ -41,7 +41,7 @@ for clave in config_requerida:
     if not config[clave]:
         raise ValueError(f"Configuración faltante: {clave.upper()}")
 
-# Mapeos personalizados para el tablero
+# Mapeos personalizados para el tablero (nombre de columnas y estados)
 MAPEO_TABLERO = {
     "columnas_estados": {
         "Bugs creados": "To Do",
@@ -155,8 +155,11 @@ class ClienteAzureDevOps:
             else:
                 cuerpo = mensaje.get_payload(decode=True).decode(errors='ignore')
             
+            detalles['cuerpo_completo'] = cuerpo
+            detalles['body'] = cuerpo  
+
             # Extraer información para detalle
-            detalles['cuerpo_completo'] = cuerpo[:1000] + "..." if len(cuerpo) > 1000 else cuerpo
+            detalles['cuerpo_preview'] = cuerpo[:1000] + "..." if len(cuerpo) > 1000 else cuerpo
             
             # Patrones para información (revisar para extraer datos y completar tarjetas)
             patrones = {
@@ -190,7 +193,7 @@ class ClienteAzureDevOps:
             estados_disponibles = self.obtener_estados_elemento(tipo_elemento)
             if estado not in estados_disponibles:
                 print(f"⚠️ Estado '{estado}' no disponible para {tipo_elemento}. Estados disponibles: {estados_disponibles}")
-                # Usar el primer estado disponible como fallback
+                # Usar el primer estado disponible por defecto
                 estado = estados_disponibles[0] if estados_disponibles else "To Do"
                 print(f"⚠️ Usando estado por defecto: {estado}")
             
@@ -210,7 +213,7 @@ class ClienteAzureDevOps:
                 datos.append({
                     "op": "add", 
                     "path": "/fields/System.History", 
-                    "value": f"Generado desde: {remitente}"
+                    "value": f"Se genera tarjeta por ejecucion reportada desde: {remitente}"
                 })
             
             respuesta = requests.post(url, headers=self.encabezados, json=datos, timeout=30)
@@ -240,15 +243,12 @@ class ClienteAzureDevOps:
             descripcion += self._descripcion_advertencia(detalles)
         else:
             descripcion += "<p>Notificación de sistema CI/CD</p>"
-        
-        if detalles and 'cuerpo_completo' in detalles:
-            descripcion += "<h4>📋 Contenido completo:</h4>"
-            descripcion += f"<pre>{detalles['cuerpo_completo']}</pre>"
-        
+                
         descripcion += "<p><em>🔄 Creado automáticamente desde monitoreo de correo</em></p>"
         return descripcion
     
     def _descripcion_error(self, detalles):
+        
         """Construye descripción para errores"""
         descripcion = "<h3>🚨 Error en Ejecución</h3>"
         descripcion += "<p>Se ha detectado un error durante la ejecución.</p>"
@@ -262,8 +262,16 @@ class ClienteAzureDevOps:
             
             if 'tiempo_ejecucion' in detalles:
                 descripcion += f"<li><strong>Tiempo de ejecución:</strong> {detalles['tiempo_ejecucion']}</li>"
-            
+
             descripcion += "</ul>"
+            
+            cuerpo = detalles.get('cuerpo_completo', detalles.get('body', ''))
+            if cuerpo:
+                if len(cuerpo) > 4000:
+                    cuerpo = cuerpo[:4000] + "... [CONTENIDO RECORTADO POR LÍMITE DE AZURE DEVOPS]"
+            
+            descripcion += "<h4>📧 Cuerpo completo del correo:</h4>"
+            descripcion += f"<pre>{cuerpo}</pre>"
         
         return descripcion
     
@@ -286,6 +294,14 @@ class ClienteAzureDevOps:
                 descripcion += f"<li><strong>Reporte:</strong> <a href='{detalles['url_reporte']}'>Ver reporte</a></li>"
             
             descripcion += "</ul>"
+
+            cuerpo = detalles.get('cuerpo_completo', detalles.get('body', ''))
+            if cuerpo:
+                if len(cuerpo) > 4000:
+                    cuerpo = cuerpo[:4000] + "... [CONTENIDO RECORTADO POR LÍMITE DE AZURE DEVOPS]"
+            
+            descripcion += "<h4>Cuerpo completo del correo:</h4>"
+            descripcion += f"<pre>{cuerpo}</pre>"
         
         return descripcion
     
