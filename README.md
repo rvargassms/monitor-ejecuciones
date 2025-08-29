@@ -19,18 +19,22 @@ Sistema automatizado que monitorea correos electrónicos de ejecuciones de prueb
 
 ## ⚙️ Configuración Rápida
 
-### 1. Clonar y preparar entorno
+### 1. Clonar y preparar entorno 
 ```bash
 git clone <tu-repositorio>
 cd email-watcher-reporter
 python -m venv .venv
 source .venv/bin/activate  # Linux/Mac
-# o
+```
+# ó 
+```
 .venv\Scripts\activate      # Windows
-2. Instalar dependencias
+```
+### 2. Instalar dependencias
+```
 pip install -r requirements.txt
 ```
-3. Configurar variables de entorno
+### 3. Configurar variables de entorno
 Crear archivo .env en la raíz del proyecto:
 
 ## Configuración IMAP
@@ -56,7 +60,7 @@ MONITORED_SENDERS=azuredevops@microsoft.com
 CHECK_INTERVAL=60
 LOG_FILE=monitor_correos.log
 ```
-4. Configurar mapeos (opcional)
+### 4. Configurar mapeos (opcional)
 Editar MAPEO_REMITENTES en el código para agregar nuevos remitentes.
 
 ## ▶️ Ejecución
